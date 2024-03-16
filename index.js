@@ -32,7 +32,13 @@ async function run() {
     app.get("/services/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      const result = await serviceCollection.findOne(query);
+      const options = {
+        projection: { title: 1, price: 1, servie_id: 1 },
+        //by using options , we can only collect data whatever we needed
+        //if value is 1, the info will be fetched
+        //if we put value 0, the specific data will be ignored
+      };
+      const result = await serviceCollection.findOne(query, options);
       res.send(result);
     });
     // Send a ping to confirm a successful connection
