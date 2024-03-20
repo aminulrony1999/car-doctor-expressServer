@@ -34,7 +34,7 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const options = {
-        projection: { title: 1, price: 1, servie_id: 1 },
+        projection: { title: 1, price: 1, servie_id: 1, img : 1 },
         //by using options , we can only collect data whatever we needed
         //if value is 1, the info will be fetched
         //if we put value 0, the specific data will be ignored
@@ -54,6 +54,12 @@ async function run() {
     app.post("/bookings", async(req,res)=>{
       const booking = req.body;
       const result = await bookingCollection.insertOne(booking);
+      res.send(result);
+    })
+    app.delete('/bookings/:id',async(req,res)=>{
+      const id = req.params;
+      const query = {_id : new ObjectId(id)};
+      const result = await bookingCollection.deleteOne(query);
       res.send(result);
     })
     // Send a ping to confirm a successful connection
