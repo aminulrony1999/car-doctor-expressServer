@@ -28,6 +28,11 @@ const client = new MongoClient(uri, {
   },
 });
 
+//our middleware
+const logger = async (req, res, next) => {
+  console.log("called:", req.host, req.originalUrl);
+  next();
+};
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -35,7 +40,7 @@ async function run() {
     const serviceCollection = client.db("carDoctor").collection("services");
     const bookingCollection = client.db("carDoctor").collection("bookings");
     //auth related api
-    app.post("/jwt", async (req, res) => {
+    app.post("/jwt", logger, async (req, res) => {
       const user = req.body;
       //to generate secret, use the below  code to generate a random number
       //write node in your terminal, it will open the node environment
@@ -54,7 +59,7 @@ async function run() {
       res.send({ success: true });
     });
     //seervice related api
-    app.get("/services", async (req, res) => {
+    app.get("/services", logger, async (req, res) => {
       const cursor = serviceCollection.find();
       const result = await cursor.toArray();
       res.send(result);
