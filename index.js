@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require('jsonwebtoken');
 const app = express();
 const port = process.env.PORT || 5000;
 require("dotenv").config();
@@ -25,6 +26,19 @@ async function run() {
     await client.connect();
     const serviceCollection = client.db("carDoctor").collection("services");
     const bookingCollection = client.db("carDoctor").collection("bookings");
+    //auth related api
+    app.post('/jwt',async(req,res)=>{
+      const user = req.body;
+      //to generate secret, use the below  code to generate a random number
+      //write node in your terminal, it will open the node environment
+      //write the below code
+      //require('crypto').randomBytes(64).toString('hex')
+      //the above code will generate an random number
+      //the secret number is stored in .env file
+      const token = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn : '1h'})
+      res.send(token);
+    })
+    //seervice related api
     app.get("/services", async (req, res) => {
       const cursor = serviceCollection.find();
       const result = await cursor.toArray();
