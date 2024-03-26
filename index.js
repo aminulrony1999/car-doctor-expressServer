@@ -33,6 +33,18 @@ const logger = async (req, res, next) => {
   console.log("called:", req.host, req.originalUrl);
   next();
 };
+
+//middleware for verifying token
+const verifyToken = async (req, res, next) => {
+  const token = req.cookies?.token;
+  console.log("Value of token in middleware : ", token);
+  if (!token) {
+    return res
+      .status(401)
+      .send({ message: "Forbidden, you are not authorised" });
+  }
+  next();
+};
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -77,7 +89,7 @@ async function run() {
       res.send(result);
     });
     //fetching data from booking
-    app.get("/bookings", async (req, res) => {
+    app.get("/bookings", logger, async (req, res) => {
       console.log(req.query.email);
       console.log("token is : ", req.cookies.token);
       let query = {};
