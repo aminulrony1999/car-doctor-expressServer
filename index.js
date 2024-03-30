@@ -36,6 +36,7 @@ const logger = async (req, res, next) => {
 
 //middleware for verifying token
 const verifyToken = async (req, res, next) => {
+  console.log('Request headers',req.headers);
   const token = req.cookies?.token;
   console.log("Value of token in middleware : ", token);
   if (!token) {
@@ -89,9 +90,9 @@ async function run() {
       res.send(result);
     });
     //fetching data from booking
-    app.get("/bookings", logger, async (req, res) => {
+    app.get("/bookings", logger, verifyToken, async (req, res) => {
       console.log(req.query.email);
-      console.log("token is : ", req.cookies.token);
+      // console.log("token is : ", req.cookies.token);
       let query = {};
       if (req.query?.email) query = { email: req.query.email };
       const result = await bookingCollection.find(query).toArray();
