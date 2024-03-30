@@ -101,6 +101,8 @@ async function run() {
       console.log(req.query.email);
       console.log("ttttt token", req.cookies.token);
       console.log("user in the valid token", req.user);
+      if(req.query.email !== req.user.email)
+      return res.status(403).send({message : "forbidden acces"});
       if (req.query.email !== req.user.email) {
         return res.status(403).send({ message: "forbidden access" });
       }
